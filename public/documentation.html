@@ -56,15 +56,18 @@
                 
                 <section id="authentication" class="doc-section">
                     <h3>אימות</h3>
-                    <p>בכל בקשה ל-API, יש לכלול את מפתח ה-API בכותרת Authorization.</p>
+                    <p>בכל בקשה ל-API, יש להשתמש באחת משתי שיטות האימות הבאות:</p>
+                    
+                    <h4>1. אימות באמצעות מפתח API (מומלץ)</h4>
+                    <p>הדרך המועדפת לאימות היא שימוש במפתח ה-API שלך בכותרת <code>X-API-Key</code>:</p>
                     
                     <div class="code-example">
-                        <h4>דוגמת בקשה</h4>
+                        <h5>דוגמת בקשה:</h5>
                         <pre><code>fetch('https://api.whatsconnect.com/v1/messages', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'Authorization': 'Bearer YOUR_API_KEY'
+    'X-API-Key': 'YOUR_API_KEY'  // המפתח מהדשבורד שלך
   },
   body: JSON.stringify({
     phone: '972501234567',
@@ -72,6 +75,35 @@
   })
 })</code></pre>
                     </div>
+                    
+                    <h4>2. אימות באמצעות Bearer Token</h4>
+                    <p>לחלופין, ניתן להשתמש בטוקן JWT שהונפק בעת ההתחברות:</p>
+                    
+                    <div class="code-example">
+                        <h5>דוגמת בקשה:</h5>
+                        <pre><code>fetch('https://api.whatsconnect.com/v1/messages', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer YOUR_JWT_TOKEN'
+  },
+  body: JSON.stringify({
+    phone: '972501234567',
+    message: 'שלום מ-API שלי!'
+  })
+})</code></pre>
+                    </div>
+                    
+                    <h4>איך להשיג את מפתח ה-API שלך</h4>
+                    <ol>
+                        <li>התחבר לחשבון WhatsConnect שלך</li>
+                        <li>עבור ללוח הבקרה</li>
+                        <li>מפתח ה-API יופיע בכרטיסיית "מפתח API"</li>
+                        <li>לחץ על כפתור העין כדי להציג את המפתח המלא</li>
+                        <li>השתמש בכפתור ההעתקה להעתקת המפתח</li>
+                    </ol>
+                    
+                    <p class="note"><strong>שים לב:</strong> מפתח ה-API שלך מאפשר גישה מלאה לחשבון שלך. שמור עליו בפרטיות ואל תשתף אותו עם אחרים.</p>
                 </section>
                 
                 <section id="messages" class="doc-section">
@@ -118,7 +150,7 @@
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'Authorization': 'Bearer YOUR_API_KEY'
+    'X-API-Key': 'YOUR_API_KEY'
   },
   body: JSON.stringify({
     phone: '972501234567',
@@ -180,7 +212,7 @@
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'Authorization': 'Bearer YOUR_API_KEY'
+    'X-API-Key': 'YOUR_API_KEY'
   },
   body: JSON.stringify({
     url: 'https://your-server.com/webhook',
@@ -229,7 +261,7 @@
                         <pre><code>fetch('https://api.whatsconnect.com/v1/status', {
   method: 'GET',
   headers: {
-    'Authorization': 'Bearer YOUR_API_KEY'
+    'X-API-Key': 'YOUR_API_KEY'
   }
 })</code></pre>
 
@@ -292,7 +324,7 @@
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'Authorization': 'Bearer YOUR_API_KEY'
+    'X-API-Key': 'YOUR_API_KEY'
   },
   body: JSON.stringify({
     phone: '972501234567',
@@ -300,6 +332,56 @@
     caption: 'תמונה מעניינת'
   })
 })</code></pre>
+                    </div>
+                    
+                    <h4>דוגמאות קוד בשפות נוספות</h4>
+                    
+                    <div class="code-example">
+                        <h5>דוגמת קוד ב-PHP:</h5>
+                        <pre><code>&lt;?php
+$apiKey = 'YOUR_API_KEY';
+$url = 'https://api.whatsconnect.com/v1/messages';
+
+$data = [
+    'phone' => '972501234567',
+    'message' => 'שלום מה-API שלי!'
+];
+
+$options = [
+    'http' => [
+        'header'  => "Content-type: application/json\r\nX-API-Key: $apiKey",
+        'method'  => 'POST',
+        'content' => json_encode($data)
+    ]
+];
+
+$context = stream_context_create($options);
+$result = file_get_contents($url, false, $context);
+$response = json_decode($result);
+print_r($response);
+?&gt;</code></pre>
+                    </div>
+                    
+                    <div class="code-example">
+                        <h5>דוגמת קוד ב-Python:</h5>
+                        <pre><code>import requests
+import json
+
+api_key = 'YOUR_API_KEY'
+url = 'https://api.whatsconnect.com/v1/messages'
+
+headers = {
+    'Content-Type': 'application/json',
+    'X-API-Key': api_key
+}
+
+data = {
+    'phone': '972501234567',
+    'message': 'שלום מה-API שלי!'
+}
+
+response = requests.post(url, headers=headers, json=data)
+print(response.json())</code></pre>
                     </div>
                 </section>
             </div>
