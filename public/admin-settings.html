@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>הגדרות מערכת | WhatsConnect API</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <h1>WhatsConnect</h1>
+                <span class="tagline">ממשק ניהול</span>
+            </div>
+            <nav class="main-nav">
+                <a href="/admin.html">משתמשים</a>
+                <a href="/admin-stats.html">סטטיסטיקות</a>
+                <a href="/admin-settings.html" class="active">הגדרות מערכת</a>
+                <button id="logout-btn" class="btn btn-outline">התנתקות</button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="admin-layout">
+        <div class="container">
+            <div class="admin-header">
+                <h2>הגדרות מערכת</h2>
+            </div>
+            
+            <div class="admin-settings-layout">
+                <div class="settings-sidebar">
+                    <ul class="settings-nav">
+                        <li><a href="#general" class="active" data-tab="general-tab">הגדרות כלליות</a></li>
+                        <li><a href="#plans" data-tab="plans-tab">חבילות ותמחור</a></li>
+                        <li><a href="#api" data-tab="api-tab">הגדרות API</a></li>
+                        <li><a href="#email" data-tab="email-tab">תבניות אימייל</a></li>
+                        <li><a href="#maintenance" data-tab="maintenance-tab">תחזוקה</a></li>
+                    </ul>
+                </div>
+                
+                <div class="settings-content">
+                    <!-- הגדרות כלליות -->
+                    <div id="general-tab" class="settings-tab active">
+                        <h3>הגדרות כלליות</h3>
+                        
+                        <form id="general-form" class="settings-form">
+                            <div class="form-group">
+                                <label for="site-name">שם האתר</label>
+                                <input type="text" id="site-name" name="siteName" placeholder="WhatsConnect">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="site-description">תיאור האתר</label>
+                                <input type="text" id="site-description" name="siteDescription" placeholder="API מקצועי לוואטסאפ">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="contact-email">אימייל ליצירת קשר</label>
+                                <input type="email" id="contact-email" name="contactEmail" placeholder="support@whatsconnect.com">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="support-phone">טלפון לתמיכה</label>
+                                <input type="tel" id="support-phone" name="supportPhone" placeholder="050-1234567">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="max-clients">מקסימום חיבורים לשרת</label>
+                                <input type="number" id="max-clients" name="maxClients" placeholder="10">
+                                <small>מספר החיבורים המקסימלי המותר לכל שרת</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>הרשמה פתוחה</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="open-registration" name="openRegistration">
+                                    <label for="open-registration"></label>
+                                </div>
+                                <small>האם לאפשר הרשמה של משתמשים חדשים לאתר</small>
+                            </div>
+                            
+                            <div class="form-submit">
+                                <button type="submit" class="btn btn-primary">שמור הגדרות</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- חבילות ותמחור -->
+                    <div id="plans-tab" class="settings-tab">
+                        <h3>הגדרות חבילות ותמחור</h3>
+                        
+                        <div class="plans-container">
+                            <div class="plan-card">
+                                <div class="plan-header">
+                                    <h4>חבילת בסיס</h4>
+                                    <div class="plan-actions">
+                                        <button class="btn-icon edit-plan" data-plan="basic"><i class="fas fa-edit"></i></button>
+                                    </div>
+                                </div>
+                                
+                                <div class="plan-details">
+                                    <div class="plan-price">₪99 / חודש</div>
+                                    <ul class="plan-features">
+                                        <li>עד 1,000 הודעות בחודש</li>
+                                        <li>חיבור אחד במקביל</li>
+                                        <li>שליחת הודעות טקסט</li>
+                                        <li>API בסיסי</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="plan-card">
+                                <div class="plan-header">
+                                    <h4>חבילת פרו</h4>
+                                    <div class="plan-actions">
+                                        <button class="btn-icon edit-plan" data-plan="pro"><i class="fas fa-edit"></i></button>
+                                    </div>
+                                </div>
+                                
+                                <div class="plan-details">
+                                    <div class="plan-price">₪199 / חודש</div>
+                                    <ul class="plan-features">
+                                        <li>עד 5,000 הודעות בחודש</li>
+                                        <li>עד 3 חיבורים במקביל</li>
+                                        <li>שליחת מדיה (תמונות וקבצים)</li>
+                                        <li>API מלא + וובהוקים</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="plan-card">
+                                <div class="plan-header">
+                                    <h4>חבילת פלטיניום</h4>
+                                    <div class="plan-actions">
+                                        <button class="btn-icon edit-plan" data-plan="platinum"><i class="fas fa-edit"></i></button>
+                                    </div>
+                                </div>
+                                
+                                <div class="plan-details">
+                                    <div class="plan-price">₪399 / חודש</div>
+                                    <ul class="plan-features">
+                                        <li>הודעות ללא הגבלה</li>
+                                        <li>חיבורים ללא הגבלה</li>
+                                        <li>כל סוגי ההודעות</li>
+                                        <li>API מתקדם + סטטיסטיקות</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- הגדרות API -->
+                    <div id="api-tab" class="settings-tab">
+                        <h3>הגדרות API</h3>
+                        
+                        <form id="api-form" class="settings-form">
+                            <div class="form-group">
+                                <label for="api-rate-limit">הגבלת קצב בקשות (Rate Limit)</label>
+                                <input type="number" id="api-rate-limit" name="apiRateLimit" placeholder="60">
+                                <small>מספר הבקשות המותר בדקה לכל משתמש</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="api-timeout">Timeout לבקשות (שניות)</label>
+                                <input type="number" id="api-timeout" name="apiTimeout" placeholder="30">
+                                <small>זמן מקסימלי בשניות לכל בקשה</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="webhook-retry">נסיונות חוזרים לוובהוק</label>
+                                <input type="number" id="webhook-retry" name="webhookRetry" placeholder="3">
+                                <small>מספר נסיונות לשליחת וובהוק במקרה של שגיאה</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>CORS מאופשר</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="cors-enabled" name="corsEnabled">
+                                    <label for="cors-enabled"></label>
+                                </div>
+                                <small>האם לאפשר בקשות Cross-Origin</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="cors-domains">דומיינים מאושרים ל-CORS</label>
+                                <textarea id="cors-domains" name="corsDomains" placeholder="הזן דומיינים מופרדים בפסיקים"></textarea>
+                                <small>אם CORS מאופשר, רק דומיינים אלו יוכלו לגשת ל-API (* לכל הדומיינים)</small>
+                            </div>
+                            
+                            <div class="form-submit">
+                                <button type="submit" class="btn btn-primary">שמור הגדרות</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- תבניות אימייל -->
+                    <div id="email-tab" class="settings-tab">
+                        <h3>תבניות אימייל</h3>
+                        
+                        <div class="email-templates">
+                            <div class="template-item">
+                                <div class="template-header">
+                                    <h4>אימייל ברוכים הבאים</h4>
+                                    <button class="btn-icon edit-template" data-template="welcome"><i class="fas fa-edit"></i></button>
+                                </div>
+                                <div class="template-preview">
+                                    <p>אימייל שנשלח למשתמשים חדשים לאחר הרשמה מוצלחת</p>
+                                </div>
+                            </div>
+                            
+                            <div class="template-item">
+                                <div class="template-header">
+                                    <h4>איפוס סיסמה</h4>
+                                    <button class="btn-icon edit-template" data-template="reset-password"><i class="fas fa-edit"></i></button>
+                                </div>
+                                <div class="template-preview">
+                                    <p>אימייל שנשלח בעת בקשה לאיפוס סיסמה</p>
+                                </div>
+                            </div>
+                            
+                            <div class="template-item">
+                                <div class="template-header">
+                                    <h4>חשבונית חודשית</h4>
+                                    <button class="btn-icon edit-template" data-template="invoice"><i class="fas fa-edit"></i></button>
+                                </div>
+                                <div class="template-preview">
+                                    <p>אימייל חשבונית הנשלח בתחילת כל חודש</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- תחזוקה -->
+                    <div id="maintenance-tab" class="settings-tab">
+                        <h3>תחזוקת מערכת</h3>
+                        
+                        <div class="maintenance-section">
+                            <h4>מצב מערכת</h4>
+                            <div class="system-status">
+                                <div class="status-item">
+                                    <span class="status-label">מסד נתונים:</span>
+                                    <span class="status-value online">מחובר</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-label">שרת WhatsApp:</span>
+                                    <span class="status-value online">פעיל</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-label">שרת API:</span>
+                                    <span class="status-value online">פעיל</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-label">מערכת אימייל:</span>
+                                    <span class="status-value online">פעילה</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="maintenance-section">
+                            <h4>פעולות תחזוקה</h4>
+                            <div class="maintenance-actions">
+                                <button id="clear-cache-btn" class="btn btn-outline">
+                                    <i class="fas fa-broom"></i> ניקוי מטמון
+                                </button>
+                                <button id="backup-btn" class="btn btn-outline">
+                                    <i class="fas fa-download"></i> גיבוי נתונים
+                                </button>
+                                <button id="sync-connections-btn" class="btn btn-outline">
+                                    <i class="fas fa-sync"></i> סנכרון חיבורים
+                                </button>
+                                <button id="maintenance-mode-btn" class="btn btn-outline danger">
+                                    <i class="fas fa-tools"></i> מצב תחזוקה
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="maintenance-section">
+                            <h4>לוג מערכת</h4>
+                            <div class="system-log">
+                                <div class="log-header">
+                                    <select id="log-level">
+                                        <option value="all">הכל</option>
+                                        <option value="error">שגיאות</option>
+                                        <option value="warning">אזהרות</option>
+                                        <option value="info">מידע</option>
+                                    </select>
+                                    <button id="refresh-log-btn" class="btn btn-small">
+                                        <i class="fas fa-sync"></i> רענון
+                                    </button>
+                                </div>
+                                <div class="log-content">
+                                    <div class="log-item error">
+                                        <span class="log-time">14:23:15</span>
+                                        <span class="log-level">שגיאה</span>
+                                        <span class="log-message">נכשל חיבור לשרת WhatsApp - Client ID: 603f12a1b456789</span>
+                                    </div>
+                                    <div class="log-item warning">
+                                        <span class="log-time">14:20:03</span>
+                                        <span class="log-level">אזהרה</span>
+                                        <span class="log-message">חריגה מהגבלת קצב בקשות - User ID: 5ff1a2b3c789</span>
+                                    </div>
+                                    <div class="log-item info">
+                                        <span class="log-time">14:15:30</span>
+                                        <span class="log-level">מידע</span>
+                                        <span class="log-message">משתמש חדש נרשם - User ID: 603f1c456d78</span>
+                                    </div>
+                                    <div class="log-item info">
+                                        <span class="log-time">14:10:22</span>
+                                        <span class="log-level">מידע</span>
+                                        <span class="log-message">גיבוי מסד נתונים הושלם בהצלחה</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- מודאל עריכת חבילה -->
+    <div id="plan-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="plan-modal-title">עריכת חבילה</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="plan-form">
+                    <input type="hidden" id="plan-id">
+                    
+                    <div class="form-group">
+                        <label for="plan-name">שם החבילה</label>
+                        <input type="text" id="plan-name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="plan-price">מחיר חודשי (₪)</label>
+                        <input type="number" id="plan-price" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="plan-messages">מספר הודעות מקסימלי</label>
+                        <input type="number" id="plan-messages" required>
+                        <small>0 עבור ללא הגבלה</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="plan-connections">מספר חיבורים מקסימלי</label>
+                        <input type="number" id="plan-connections" required>
+                        <small>0 עבור ללא הגבלה</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>אפשרויות נוספות:</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-option">
+                                <input type="checkbox" id="plan-media">
+                                <label for="plan-media">שליחת מדיה (תמונות וקבצים)</label>
+                            </div>
+                            <div class="checkbox-option">
+                                <input type="checkbox" id="plan-webhooks">
+                                <label for="plan-webhooks">וובהוקים</label>
+                            </div>
+                            <div class="checkbox-option">
+                                <input type="checkbox" id="plan-api-advanced">
+                                <label for="plan-api-advanced">API מתקדם</label>
+                            </div>
+                            <div class="checkbox-option">
+                                <input type="checkbox" id="plan-statistics">
+                                <label for="plan-statistics">סטטיסטיקות מתקדמות</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="plan-form-result" class="form-result"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="plan-cancel-btn" class="btn btn-outline">ביטול</button>
+                <button id="plan-save-btn" class="btn btn-primary">שמירה</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- מודאל עריכת תבנית אימייל -->
+    <div id="template-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="template-modal-title">עריכת תבנית אימייל</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="template-form">
+                    <input type="hidden" id="template-id">
+                    
+                    <div class="form-group">
+                        <label for="template-subject">נושא האימייל</label>
+                        <input type="text" id="template-subject" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="template-content">תוכן האימייל</label>
+                        <textarea id="template-content" rows="10" required></textarea>
+                        <small>תגיות אפשריות: {שם}, {אימייל}, {קישור}, {תאריך}</small>
+                    </div>
+                    
+                    <div id="template-form-result" class="form-result"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="template-cancel-btn" class="btn btn-outline">ביטול</button>
+                <button id="template-save-btn" class="btn btn-primary">שמירה</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>WhatsConnect</h2>
+                    <p>API חזק ופשוט לוואטסאפ</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 WhatsConnect. כל הזכויות שמורות.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="js/main.js"></script>
+    <script src="js/admin-settings.js"></script>
+</body>
+</html>

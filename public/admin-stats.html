@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סטטיסטיקות מערכת | WhatsConnect API</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <h1>WhatsConnect</h1>
+                <span class="tagline">ממשק ניהול</span>
+            </div>
+            <nav class="main-nav">
+                <a href="/admin.html">משתמשים</a>
+                <a href="/admin-stats.html" class="active">סטטיסטיקות</a>
+                <a href="/admin-settings.html">הגדרות מערכת</a>
+                <button id="logout-btn" class="btn btn-outline">התנתקות</button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="admin-layout">
+        <div class="container">
+            <div class="admin-header">
+                <h2>סטטיסטיקות מערכת</h2>
+                <div class="date-filter">
+                    <label>טווח תאריכים:</label>
+                    <select id="date-range">
+                        <option value="today">היום</option>
+                        <option value="yesterday">אתמול</option>
+                        <option value="week" selected>7 ימים אחרונים</option>
+                        <option value="month">30 ימים אחרונים</option>
+                        <option value="year">שנה אחרונה</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="stats-overview">
+                <div class="stats-card">
+                    <div class="stats-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stats-info">
+                        <h3 id="total-users">-</h3>
+                        <p>סה"כ משתמשים</p>
+                    </div>
+                </div>
+                
+                <div class="stats-card">
+                    <div class="stats-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <div class="stats-info">
+                        <h3 id="new-users">-</h3>
+                        <p>משתמשים חדשים</p>
+                    </div>
+                </div>
+                
+                <div class="stats-card">
+                    <div class="stats-icon">
+                        <i class="fas fa-paper-plane"></i>
+                    </div>
+                    <div class="stats-info">
+                        <h3 id="total-messages">-</h3>
+                        <p>הודעות שנשלחו</p>
+                    </div>
+                </div>
+                
+                <div class="stats-card">
+                    <div class="stats-icon">
+                        <i class="fas fa-plug"></i>
+                    </div>
+                    <div class="stats-info">
+                        <h3 id="active-connections">-</h3>
+                        <p>חיבורים פעילים</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="admin-dashboard">
+                <div class="dashboard-section chart-section">
+                    <h3>פעילות משתמשים לאורך זמן</h3>
+                    <div class="chart-container">
+                        <canvas id="users-chart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="dashboard-section chart-section">
+                    <h3>הודעות לפי יום</h3>
+                    <div class="chart-container">
+                        <canvas id="messages-chart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="dashboard-section">
+                    <h3>התפלגות חבילות</h3>
+                    <div class="chart-container">
+                        <canvas id="plans-chart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="dashboard-section">
+                    <h3>משתמשים פעילים לאחרונה</h3>
+                    <div class="table-container">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>משתמש</th>
+                                    <th>חבילה</th>
+                                    <th>הודעות</th>
+                                    <th>פעילות אחרונה</th>
+                                </tr>
+                            </thead>
+                            <tbody id="active-users-list">
+                                <!-- יטען דינאמית -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>WhatsConnect</h2>
+                    <p>API חזק ופשוט לוואטסאפ</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 WhatsConnect. כל הזכויות שמורות.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- ספריות גרפים -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script src="js/main.js"></script>
+    <script src="js/admin-stats.js"></script>
+</body>
+</html>

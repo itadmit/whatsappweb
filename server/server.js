@@ -5,6 +5,7 @@ const path = require('path');
 const config = require('./config/config');
 const { authMiddleware } = require('./middlewares/auth');
 const { adminMiddleware } = require('./middlewares/admin');
+const adminController = require('./controllers/adminController');
 
 // ייבוא נתיבים
 const apiRoutes = require('./routes/api');
@@ -17,7 +18,12 @@ const app = express();
 
 // חיבור למסד נתונים
 mongoose.connect(config.databaseUri)
-  .then(() => console.log('Connected to MongoDB'))
+  .then(() => {
+    console.log('Connected to MongoDB');
+    
+    // יצירת משתמש מנהל ראשי (רק בפעם הראשונה)
+    adminController.createSuperAdmin();
+  })
   .catch(err => console.error('MongoDB connection error:', err));
 
 // Middlewares

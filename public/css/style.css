@@ -240,7 +240,13 @@
     border-radius: 5px;
     font-family: 'Noto Sans Hebrew', sans-serif;
   }
-  
+
+  .btn{
+    font-family: 'Noto Sans Hebrew', sans-serif;
+  }
+  input[type="checkbox"] {
+    max-width: 25px !important;
+}
   .status-container {
     margin: 20px 0;
     padding: 10px;
