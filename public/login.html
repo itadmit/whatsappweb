@@ -392,36 +392,13 @@
                 const password = document.getElementById('password').value;
                 const remember = document.getElementById('remember').checked;
                 
-                // אנימציית טעינה (אופציונלי)
+                // אנימציית טעינה
                 const submitBtn = this.querySelector('button[type="submit"]');
                 const originalText = submitBtn.textContent;
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> מתחבר...';
                 
-                // במצב פיתוח - מדמה התחברות מוצלחת
-                setTimeout(() => {
-                    // הצגת הודעת הצלחה
-                    loginAlert.className = 'alert alert-success';
-                    loginAlert.textContent = 'התחברות מוצלחת! מעביר אותך ללוח הבקרה...';
-                    loginAlert.style.display = 'block';
-                    
-                    // שמירת מידע פיקטיבי
-                    localStorage.setItem('token', 'demo_token_123');
-                    localStorage.setItem('userData', JSON.stringify({
-                        id: '1',
-                        name: 'משתמש לדוגמה',
-                        email: email,
-                        plan: 'pro'
-                    }));
-                    
-                    // מעבר ללוח הבקרה
-                    setTimeout(() => {
-                        window.location.href = '/dashboard.html';
-                    }, 1500);
-                }, 1000);
-                
-                // בסביבת פיתוח אמיתית, נשלח בקשה לשרת:
-                /*
+                // שליחה לשרת
                 fetch('/api/auth/login', {
                     method: 'POST',
                     headers: {
@@ -465,7 +442,6 @@
                     submitBtn.disabled = false;
                     submitBtn.textContent = originalText;
                 });
-                */
             });
             
             // טיפול בשכחת סיסמה
@@ -481,13 +457,6 @@
                     return;
                 }
                 
-                // במצב פיתוח - מדמה שליחת מייל
-                loginAlert.className = 'alert alert-success';
-                loginAlert.textContent = 'נשלחו הנחיות לאיפוס הסיסמה לאימייל שהזנת';
-                loginAlert.style.display = 'block';
-                
-                // בסביבת פיתוח אמיתית:
-                /*
                 fetch('/api/auth/reset-password-request', {
                     method: 'POST',
                     headers: {
@@ -506,13 +475,12 @@
                     loginAlert.textContent = 'שגיאה בשליחת הנחיות לאיפוס סיסמה';
                     loginAlert.style.display = 'block';
                 });
-                */
             });
             
             // בדיקה אם המשתמש כבר מחובר
             const token = localStorage.getItem('token');
             if (token) {
-                window.location.href = 'dashboard.html'; // ללא ה-/
+                window.location.href = 'dashboard.html';
             }
         });
     </script>

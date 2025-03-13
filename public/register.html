@@ -121,48 +121,7 @@
         </div>
     </footer>
     
-    <script src="js/main.js"></script>
-    <script>
-        document.getElementById('register-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const formData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                password: document.getElementById('password').value,
-                phone: document.getElementById('phone').value,
-                plan: document.querySelector('input[name="plan"]:checked').value,
-                acceptedTerms: document.getElementById('terms').checked
-            };
-            
-            try {
-                const response = await fetch('/api/auth/register', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    document.getElementById('form-result').innerHTML = 
-                        '<div class="alert alert-success">ההרשמה בוצעה בהצלחה! מעביר אותך להתחברות...</div>';
-                    
-                    // מעבר לדף ההתחברות לאחר 2 שניות
-                    setTimeout(() => {
-                        window.location.href = '/login.html';
-                    }, 2000);
-                } else {
-                    document.getElementById('form-result').innerHTML = 
-                        `<div class="alert alert-error">שגיאה: ${data.error}</div>`;
-                }
-            } catch (error) {
-                document.getElementById('form-result').innerHTML = 
-                    '<div class="alert alert-error">שגיאה בהרשמה, נסה שוב מאוחר יותר</div>';
-            }
-        });
-    </script>
+
+    <script src="js/auth.js"></script>
 </body>
 </html>

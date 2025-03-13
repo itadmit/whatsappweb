@@ -1,4 +1,18 @@
 document.addEventListener('DOMContentLoaded', function() {
+
+      // בדוק אם האלמנטים הנדרשים קיימים בדף
+      const clientIdElement = document.getElementById('client-id');
+    
+      // אם האלמנטים לא קיימים, פשוט צא מהפונקציה
+      if (!clientIdElement) {
+          console.log('WhatsApp client elements not found on this page');
+          return; // צא מהפונקציה
+      }
+      
+      // המשך הקוד רק אם האלמנטים קיימים
+
+
+
     // אלמנטים בדף
     const clientId = document.getElementById('client-id').value;
     const initBtn = document.getElementById('init-btn');

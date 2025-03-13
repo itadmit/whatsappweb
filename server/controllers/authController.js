@@ -8,7 +8,7 @@ exports.register = async (req, res) => {
     const { name, email, password, phone, plan, acceptedTerms } = req.body;
     
     // בדיקה שכל השדות החובה הוזנו
-    if (!name || !email || !password || !phone || !plan) {
+    if (!name || !email || !password || !phone) {
       return res.status(400).json({
         success: false,
         error: 'יש למלא את כל השדות החובה'
@@ -38,7 +38,7 @@ exports.register = async (req, res) => {
       email,
       password,
       phone,
-      plan,
+      plan: plan || 'basic',
       acceptedTerms: true
     });
     
@@ -127,15 +127,43 @@ exports.login = async (req, res) => {
 
 // אימות טוקן
 exports.verifyToken = (req, res) => {
-  // בדיקת הטוקן מתבצעת במידלוור, אם הגענו לכאן הטוקן תקין
+  // בדיקת הטוקן מתבצעת במידלוור, אם הגענו לכאן הטוקן תקף
   res.json({
     success: true,
     user: {
-      id: req.user.id,
+      id: req.user._id,
       email: req.user.email,
-      role: req.user.role
+      role: req.user.role,
+      name: req.user.name,
+      plan: req.user.plan
     }
   });
+};
+
+// פרופיל משתמש
+exports.getUserProfile = async (req, res) => {
+  try {
+    // המידע כבר זמין מהמידלוור
+    res.json({
+      success: true,
+      user: {
+        id: req.user._id,
+        name: req.user.name,
+        email: req.user.email,
+        phone: req.user.phone,
+        role: req.user.role,
+        plan: req.user.plan,
+        apiKey: req.user.apiKey,
+        createdAt: req.user.createdAt
+      }
+    });
+  } catch (error) {
+    console.error('Get profile error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'שגיאה בטעינת פרופיל המשתמש'
+    });
+  }
 };
 
 // איפוס סיסמה - שלב ראשון (שליחת מייל)
@@ -161,11 +189,11 @@ exports.requestPasswordReset = async (req, res) => {
     }
     
     // כאן יש להוסיף קוד לשליחת מייל עם קישור לאיפוס סיסמה
-    // ...
+    // במציאות נשתמש בשירות דוא"ל כמו SendGrid או Nodemailer
     
     res.json({
       success: true,
-      message: 'הוראות לאיפוס הסיסמה נשלחו לאימייל שהוזן'
+      message: 'הוראות לאיפוס הסיסמה נשלחו לאימייל שהזנת'
     });
   } catch (error) {
     console.error('Password reset request error:', error);

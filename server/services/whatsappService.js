@@ -33,7 +33,16 @@ class WhatsAppService {
     // הגדרות לקוח
     const clientOptions = {
       puppeteer: {
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-dev-shm-usage',
+          '--disable-accelerated-2d-canvas',
+          '--no-first-run',
+          '--no-zygote',
+          '--disable-gpu'
+        ],
+        headless: true
       }
     };
 
@@ -101,6 +110,19 @@ class WhatsAppService {
           
           await axios.post(webhooks[clientId], messageData);
           console.log(`Webhook sent for client ${clientId}`);
+          
+          // עדכון סטטיסטיקות הודעות
+          const MessageStats = require('../models/MessageStats');
+          const Connection = require('../models/Connection');
+          
+          const connection = await Connection.findById(clientId);
+          if (connection) {
+            await MessageStats.updateOne(
+              { userId: connection.userId, connectionId: connection._id },
+              { $inc: { messagesReceived: 1 } },
+              { upsert: true }
+            );
+          }
         } catch (error) {
           console.error(`Error sending webhook for client ${clientId}:`, error.message);
         }
@@ -192,7 +214,7 @@ class WhatsAppService {
   // קבלת סטטוס
   static getStatus(clientId) {
     if (!clients[clientId]) {
-      return { status: 'not_initialized' };
+      return { status: 'not_initialized', connected: false };
     }
 
     return {
@@ -201,27 +223,27 @@ class WhatsAppService {
     };
   }
 
-  // ניתוק חיבור
-  static async disconnectClient(clientId) {
-    if (!clients[clientId]) {
-      throw new Error('Client not found');
-    }
-
-    try {
-      await clients[clientId].client.destroy();
-      delete clients[clientId];
-      delete qrCodes[clientId];
-      delete webhooks[clientId];
-
-      return {
-        success: true,
-        message: 'Client disconnected successfully'
-      };
-    } catch (error) {
-      console.error(`Error disconnecting client ${clientId}:`, error);
-      throw error;
-    }
+// ניתוק חיבור
+static async disconnectClient(clientId) {
+  if (!clients[clientId]) {
+    throw new Error('Client not found');
   }
+
+  try {
+    await clients[clientId].client.destroy();
+    delete clients[clientId];
+    delete qrCodes[clientId];
+    delete webhooks[clientId];
+
+    return {
+      success: true,
+      message: 'Client disconnected successfully'
+    };
+  } catch (error) {
+    console.error(`Error disconnecting client ${clientId}:`, error);
+    throw error;
+  }
+}
 }
 
 module.exports = WhatsAppService;

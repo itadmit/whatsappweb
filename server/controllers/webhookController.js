@@ -1,17 +1,57 @@
-const WhatsAppService = require('../services/whatsappService');
+const Connection = require('../models/Connection');
 
-exports.setWebhook = (req, res) => {
-  const { clientId } = req.params;
-  const { url } = req.body;
-  
-  if (!url) {
-    return res.status(400).json({ error: 'Webhook URL is required' });
-  }
-  
+// הגדרת webhook
+exports.setWebhook = async (req, res) => {
   try {
-    const result = WhatsAppService.setWebhook(clientId, url);
-    res.json(result);
+    const userId = req.user._id;
+    const { url } = req.body;
+    
+    if (!url) {
+      return res.status(400).json({ success: false, error: 'כתובת Webhook היא שדה חובה' });
+    }
+    
+    // בדיקה אם קיים חיבור
+    const connection = await Connection.findOne({ userId });
+    
+    if (!connection) {
+      return res.status(404).json({ success: false, error: 'לא נמצא חיבור' });
+    }
+    
+    // עדכון כתובת ה-webhook
+    connection.webhookUrl = url;
+    await connection.save();
+    
+    // עדכון השירות של WhatsApp
+    const clientId = connection._id.toString();
+    const result = await WhatsAppService.setWebhook(clientId, url);
+    
+    res.json({ success: true, webhook: { url } });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Set webhook error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+// קבלת הגדרות webhook
+exports.getWebhook = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    
+    // בדיקה אם קיים חיבור
+    const connection = await Connection.findOne({ userId });
+    
+    if (!connection) {
+      return res.status(404).json({ success: false, error: 'לא נמצא חיבור' });
+    }
+    
+    res.json({ 
+      success: true, 
+      webhook: { 
+        url: connection.webhookUrl 
+      } 
+    });
+  } catch (error) {
+    console.error('Get webhook error:', error);
+    res.status(500).json({ success: false, error: error.message });
   }
 };
