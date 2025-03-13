@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>לוח בקרה | WhatsConnect API</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #25D366;
+            --primary-dark: #128C7E;
+            --secondary-color: #34B7F1;
+            --dark-color: #075E54;
+            --light-color: #ECE5DD;
+            --success-color: #4CAF50;
+            --error-color: #F44336;
+            --warning-color: #FF9800;
+            --gray-light: #f5f5f5;
+            --gray: #e0e0e0;
+            --gray-dark: #757575;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans Hebrew', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: var(--gray-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--dark-color);
+            transition: var(--transition);
+        }
+
+        a:hover {
+            color: var(--primary-color);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--dark-color);
+            border: 2px solid var(--dark-color);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--dark-color);
+            color: white;
+        }
+
+        /* Header */
+        .main-header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            padding: 15px 0;
+        }
+
+        .main-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo h1 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            margin: 0;
+        }
+
+        .tagline {
+            color: var(--gray-dark);
+            font-size: 0.9rem;
+        }
+
+        .main-nav {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .main-nav a {
+            font-weight: 500;
+        }
+
+        /* Dashboard */
+        .dashboard-section {
+            flex: 1;
+            padding: 40px 0;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-title h2 {
+            color: var(--dark-color);
+            margin-bottom: 10px;
+        }
+
+        .dashboard-title p {
+            color: var(--gray-dark);
+        }
+
+        .user-panel {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-name {
+            font-weight: 600;
+        }
+
+        .user-plan {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+
+        .logout-btn {
+            color: var(--error-color);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        /* Dashboard Stats */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(37, 211, 102, 0.1);
+            border-radius: 50%;
+        }
+
+        .stat-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            color: var(--dark-color);
+        }
+
+        .stat-info p {
+            color: var(--gray-dark);
+            font-size: 0.9rem;
+        }
+
+        /* Dashboard Main */
+        .dashboard-main {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .dash-card {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .dash-card h3 {
+            color: var(--dark-color);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dash-card h3 i {
+            color: var(--primary-color);
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: var(--gray-light);
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .status-indicator.connected {
+            background-color: var(--success-color);
+        }
+
+        .status-indicator.disconnected {
+            background-color: var(--error-color);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--gray);
+            border-radius: 5px;
+            font-family: 'Noto Sans Hebrew', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .qr-container {
+            text-align: center;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .qr-container img {
+            max-width: 200px;
+            border: 1px solid var(--gray);
+            padding: 10px;
+            background: white;
+        }
+
+        .quick-help {
+            background-color: rgba(52, 183, 241, 0.1);
+            border-left: 4px solid var(--secondary-color);
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 3px;
+        }
+
+        .quick-help h4 {
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+
+        .quick-help ul {
+            margin-left: 20px;
+        }
+
+        .quick-help ul li {
+            margin-bottom: 5px;
+        }
+
+        .api-key-container {
+            background-color: var(--gray-light);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .api-key-value {
+            font-family: monospace;
+            font-size: 0.9rem;
+            margin-left: 10px;
+            flex-grow: 1;
+            word-break: break-all;
+        }
+
+        .copy-btn {
+            background: none;
+            border: none;
+            color: var(--secondary-color);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        /* Footer */
+        .main-footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 20px 0;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-logo h2 {
+            color: white;
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            margin-right: 20px;
+            font-size: 0.9rem;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .main-header .container,
+            .dashboard-header,
+            .footer-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .main-nav,
+            .user-panel {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <h1>WhatsConnect</h1>
+                <span class="tagline">API מקצועי לוואטסאפ</span>
+            </div>
+            <nav class="main-nav">
+                <a href="dashboard.html" class="active">לוח בקרה</a>
+                <a href="documentation.html">תיעוד API</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="dashboard-section">
+        <div class="container">
+            <div class="dashboard-header">
+                <div class="dashboard-title">
+                    <h2>לוח בקרה</h2>
+                    <p>ברוכים הבאים! נהל את חיבורי הוואטסאפ וה-API שלך.</p>
+                </div>
+                <div class="user-panel">
+                    <span class="user-name">שלום, <span id="user-name">משתמש</span></span>
+                    <span class="user-plan" id="user-plan">חבילת פרו</span>
+                    <button id="logout-btn" class="logout-btn">התנתקות <i class="fas fa-sign-out-alt"></i></button>
+                </div>
+            </div>
+            
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-plug"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="stats-connections">1</h3>
+                        <p>חיבורים פעילים</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-paper-plane"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="stats-sent">0</h3>
+                        <p>הודעות שנשלחו</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-inbox"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="stats-received">0</h3>
+                        <p>הודעות שהתקבלו</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>API Key</h3>
+                        <p>המפתח שלך לגישה ל-API</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dashboard-main">
+                <div class="dash-card">
+                    <h3><i class="fas fa-link"></i> חיבור וואטסאפ</h3>
+                    
+                    <div class="connection-status">
+                        <div class="status-indicator disconnected"></div>
+                        <span>סטטוס: <strong id="connection-status">מנותק</strong></span>
+                    </div>
+                    
+                    <button id="connect-btn" class="btn btn-primary">התחבר לוואטסאפ</button>
+                    
+                    <div id="qr-container" class="qr-container">
+                        <p>סרוק את קוד ה-QR באמצעות הטלפון שלך:</p>
+                        <img id="qr-code" src="https://via.placeholder.com/200x200?text=QR+Code" alt="QR Code">
+                        <p>פתח את וואטסאפ > תפריט הגדרות > WhatsApp Web > סרוק קוד QR</p>
+                    </div>
+                </div>
+                
+                <div class="dash-card">
+                    <h3><i class="fas fa-key"></i> מפתח API</h3>
+                    
+                    <p>השתמש במפתח הבא כדי לבצע קריאות ל-API:</p>
+                    
+                    <div class="api-key-container">
+                        <span>API Key:</span>
+                        <span id="api-key-value" class="api-key-value">••••••••••••••••••••••</span>
+                        <button id="show-key-btn" class="copy-btn" title="הצג/הסתר"><i class="fas fa-eye"></i></button>
+                        <button id="copy-key-btn" class="copy-btn" title="העתק"><i class="fas fa-copy"></i></button>
+                    </div>
+                    
+                    <div class="quick-help">
+                        <h4>שימוש מהיר ב-API</h4>
+                        <ul>
+                            <li>השתמש במפתח ה-API בכותרת <code>Authorization</code> בכל בקשה</li>
+                            <li>שלח הודעות ל-<code>POST /api/v1/messages</code></li>
+                            <li>הגדר webhook ל-<code>POST /api/v1/webhooks</code></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="dash-card">
+                    <h3><i class="fas fa-cog"></i> הגדרת Webhook</h3>
+                    
+                    <p>הזן כתובת URL שתקבל את כל ההודעות הנכנסות בזמן אמת:</p>
+                    
+                    <div class="form-group">
+                        <label for="webhook-url">כתובת Webhook:</label>
+                        <input type="text" id="webhook-url" placeholder="https://your-server.com/webhook">
+                    </div>
+                    
+                    <button id="save-webhook-btn" class="btn btn-primary">שמור הגדרות</button>
+                </div>
+                
+                <div class="dash-card">
+                    <h3><i class="fas fa-paper-plane"></i> שליחת הודעת בדיקה</h3>
+                    
+                    <div class="form-group">
+                        <label for="test-phone">מספר טלפון (כולל קידומת מדינה):</label>
+                        <input type="text" id="test-phone" placeholder="972501234567">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="test-message">תוכן ההודעה:</label>
+                        <textarea id="test-message" placeholder="הקלד את הודעת הבדיקה כאן..."></textarea>
+                    </div>
+                    
+                    <button id="send-test-btn" class="btn btn-primary">שלח הודעת בדיקה</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>WhatsConnect</h2>
+                </div>
+                <div class="footer-links">
+                    <a href="dashboard.html">לוח בקרה</a>
+                    <a href="documentation.html">תיעוד API</a>
+                    <a href="#">תמיכה</a>
+                    <a href="#">תנאי שימוש</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // בדיקה אם המשתמש מחובר
+            const token = localStorage.getItem('token');
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            
+            if (!token) {
+                // אם אין טוקן, הפנה לדף התחברות
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // הצגת נתוני משתמש בממשק
+            document.getElementById('user-name').textContent = userData.name || 'משתמש';
+            
+            // הצגת סוג החבילה
+            const planDisplay = {
+                'basic': 'בסיס',
+                'pro': 'פרו',
+                'platinum': 'פלטיניום'
+            };
+            document.getElementById('user-plan').textContent = planDisplay[userData.plan] || userData.plan || 'בסיס';
+            
+            // טעינת נתוני סטטיסטיקה (מדומים)
+            document.getElementById('stats-connections').textContent = '1';
+            document.getElementById('stats-sent').textContent = '42';
+            document.getElementById('stats-received').textContent = '18';
+            
+            // טיפול בהצגת מפתח API
+            const apiKeyValue = document.getElementById('api-key-value');
+            const showKeyBtn = document.getElementById('show-key-btn');
+            const copyKeyBtn = document.getElementById('copy-key-btn');
+            
+            const apiKey = 'api_key_' + Math.random().toString(36).substring(2, 15);
+            
+            showKeyBtn.addEventListener('click', function() {
+                if (apiKeyValue.textContent.includes('•')) {
+                    apiKeyValue.textContent = apiKey;
+                    showKeyBtn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+                } else {
+                    apiKeyValue.textContent = '••••••••••••••••••••••';
+                    showKeyBtn.innerHTML = '<i class="fas fa-eye"></i>';
+                }
+            });
+            
+            copyKeyBtn.addEventListener('click', function() {
+                navigator.clipboard.writeText(apiKey).then(() => {
+                    copyKeyBtn.innerHTML = '<i class="fas fa-check"></i>';
+                    setTimeout(() => {
+                        copyKeyBtn.innerHTML = '<i class="fas fa-copy"></i>';
+                    }, 2000);
+                });
+            });
+            
+            // טיפול בחיבור וואטסאפ
+            const connectBtn = document.getElementById('connect-btn');
+            const qrContainer = document.getElementById('qr-container');
+            const connectionStatus = document.getElementById('connection-status');
+            
+            connectBtn.addEventListener('click', function() {
+                connectionStatus.textContent = 'מאתחל...';
+                connectBtn.disabled = true;
+                
+                // מדמה התחלת חיבור וקבלת קוד QR
+                setTimeout(() => {
+                    connectionStatus.textContent = 'ממתין לסריקת QR';
+                    qrContainer.style.display = 'block';
+                    
+                    // מדמה סריקת QR וחיבור מוצלח
+                    setTimeout(() => {
+                        connectionStatus.textContent = 'מחובר';
+                        document.querySelector('.status-indicator').classList.remove('disconnected');
+                        document.querySelector('.status-indicator').classList.add('connected');
+                        qrContainer.style.display = 'none';
+                        connectBtn.textContent = 'התנתק';
+                        connectBtn.disabled = false;
+                    }, 5000);
+                }, 2000);
+            });
+            
+            // טיפול בשמירת webhook
+            const saveWebhookBtn = document.getElementById('save-webhook-btn');
+            
+            saveWebhookBtn.addEventListener('click', function() {
+                const webhookUrl = document.getElementById('webhook-url').value;
+                
+                if (!webhookUrl) {
+                    alert('אנא הזן כתובת webhook תקינה');
+                    return;
+                }
+                
+                saveWebhookBtn.disabled = true;
+                saveWebhookBtn.textContent = 'שומר...';
+                
+                // מדמה שמירת הגדרות
+                setTimeout(() => {
+                    alert('הגדרות ה-webhook נשמרו בהצלחה!');
+                    saveWebhookBtn.disabled = false;
+                    saveWebhookBtn.textContent = 'שמור הגדרות';
+                }, 1000);
+            });
+            
+            // טיפול בשליחת הודעת בדיקה
+            const sendTestBtn = document.getElementById('send-test-btn');
+            
+            sendTestBtn.addEventListener('click', function() {
+                const phone = document.getElementById('test-phone').value;
+                const message = document.getElementById('test-message').value;
+                
+                if (!phone || !message) {
+                    alert('אנא מלא את כל השדות');
+                    return;
+                }
+                
+                sendTestBtn.disabled = true;
+                sendTestBtn.textContent = 'שולח...';
+                
+                // מדמה שליחת הודעה
+                setTimeout(() => {
+                    alert('ההודעה נשלחה בהצלחה!');
+                    document.getElementById('test-message').value = '';
+                    sendTestBtn.disabled = false;
+                    sendTestBtn.textContent = 'שלח הודעת בדיקה';
+                    
+                    // עדכון מונה הודעות שנשלחו
+                    const sentCounter = document.getElementById('stats-sent');
+                    sentCounter.textContent = parseInt(sentCounter.textContent) + 1;
+                }, 1500);
+            });
+            
+            // טיפול בהתנתקות
+            document.getElementById('logout-btn').addEventListener('click', function() {
+                localStorage.removeItem('token');
+                localStorage.removeItem('userData');
+                window.location.href = 'login.html';
+            });
+        });
+    </script>
+</body>
+</html>

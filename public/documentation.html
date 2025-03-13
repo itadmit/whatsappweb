@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>תיעוד API | WhatsConnect API</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <h1>WhatsConnect</h1>
+                <span class="tagline">API מקצועי לוואטסאפ</span>
+            </div>
+            <nav class="main-nav">
+                <a href="/dashboard.html">לוח בקרה</a>
+                <a href="/documentation.html" class="active">תיעוד API</a>
+                <button id="logout-btn" class="btn btn-outline">התנתקות</button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="documentation-layout">
+        <div class="container">
+            <div class="doc-header">
+                <h2>תיעוד API</h2>
+                <div class="api-key-container">
+                    <span>מפתח API שלך:</span>
+                    <code id="api-key">********</code>
+                    <button id="show-key-btn" class="btn btn-small"><i class="fas fa-eye"></i></button>
+                    <button id="copy-key-btn" class="btn btn-small"><i class="fas fa-copy"></i></button>
+                </div>
+            </div>
+            
+            <div class="doc-navigation">
+                <ul>
+                    <li><a href="#introduction">מבוא</a></li>
+                    <li><a href="#authentication">אימות</a></li>
+                    <li><a href="#messages">שליחת הודעות</a></li>
+                    <li><a href="#webhooks">וובהוקים</a></li>
+                    <li><a href="#status">סטטוס חיבור</a></li>
+                    <li><a href="#advanced">אפשרויות מתקדמות</a></li>
+                </ul>
+            </div>
+            
+            <div class="doc-content">
+                <section id="introduction" class="doc-section">
+                    <h3>מבוא</h3>
+                    <p>API של WhatsConnect מאפשר לך לשלב את הפונקציונליות של וואטסאפ באפליקציות שלך בקלות. 
+                       באמצעות API זה תוכל לשלוח ולקבל הודעות, לקבל עדכוני סטטוס, ולנהל חיבורים מרובים.</p>
+                    <p>כל הבקשות צריכות להיות מאומתות באמצעות מפתח API שלך, אותו תוכל למצוא בחלק העליון של דף זה.</p>
+                </section>
+                
+                <section id="authentication" class="doc-section">
+                    <h3>אימות</h3>
+                    <p>בכל בקשה ל-API, יש לכלול את מפתח ה-API בכותרת Authorization.</p>
+                    
+                    <div class="code-example">
+                        <h4>דוגמת בקשה</h4>
+                        <pre><code>fetch('https://api.whatsconnect.com/v1/messages', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    phone: '972501234567',
+    message: 'שלום מ-API שלי!'
+  })
+})</code></pre>
+                    </div>
+                </section>
+                
+                <section id="messages" class="doc-section">
+                    <h3>שליחת הודעות</h3>
+                    <p>API זה מאפשר שליחת סוגים שונים של הודעות לאנשי קשר בוואטסאפ.</p>
+                    
+                    <h4>שליחת הודעת טקסט</h4>
+                    <div class="endpoint">
+                        <span class="method">POST</span>
+                        <span class="url">/api/v1/messages</span>
+                    </div>
+                    
+                    <div class="params-table">
+                        <h5>פרמטרים:</h5>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>שם</th>
+                                    <th>סוג</th>
+                                    <th>חובה</th>
+                                    <th>תיאור</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>phone</td>
+                                    <td>String</td>
+                                    <td>כן</td>
+                                    <td>מספר טלפון כולל קידומת מדינה (ללא תווים מיוחדים)</td>
+                                </tr>
+                                <tr>
+                                    <td>message</td>
+                                    <td>String</td>
+                                    <td>כן</td>
+                                    <td>תוכן ההודעה</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="code-example">
+                        <h5>דוגמת בקשה:</h5>
+                        <pre><code>fetch('https://api.whatsconnect.com/v1/messages', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    phone: '972501234567',
+    message: 'שלום מ-API שלי!'
+  })
+})</code></pre>
+
+                        <h5>דוגמת תשובה:</h5>
+                        <pre><code>{
+  "success": true,
+  "messageId": "ABC123XYZ",
+  "timestamp": 1678912345
+}</code></pre>
+                    </div>
+                    
+                    <!-- נוסיף כאן הרחבות עבור סוגי הודעות אחרים (תמונות, מסמכים וכו') -->
+                </section>
+                
+                <section id="webhooks" class="doc-section">
+                    <h3>וובהוקים</h3>
+                    <p>וובהוקים מאפשרים לך לקבל עדכונים בזמן אמת על הודעות נכנסות ושינויי סטטוס.</p>
+                    
+                    <h4>הגדרת כתובת Webhook</h4>
+                    <div class="endpoint">
+                        <span class="method">POST</span>
+                        <span class="url">/api/v1/webhooks</span>
+                    </div>
+                    
+                    <div class="params-table">
+                        <h5>פרמטרים:</h5>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>שם</th>
+                                    <th>סוג</th>
+                                    <th>חובה</th>
+                                    <th>תיאור</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>url</td>
+                                    <td>String</td>
+                                    <td>כן</td>
+                                    <td>כתובת URL שתקבל את העדכונים</td>
+                                </tr>
+                                <tr>
+                                    <td>events</td>
+                                    <td>Array</td>
+                                    <td>לא</td>
+                                    <td>רשימת אירועים לקבלה (ברירת מחדל: ["message"])</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="code-example">
+                        <h5>דוגמת בקשה:</h5>
+                        <pre><code>fetch('https://api.whatsconnect.com/v1/webhooks', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    url: 'https://your-server.com/webhook',
+    events: ['message', 'status']
+  })
+})</code></pre>
+
+                        <h5>דוגמת תשובה:</h5>
+                        <pre><code>{
+  "success": true,
+  "webhook": {
+    "url": "https://your-server.com/webhook",
+    "events": ["message", "status"]
+  }
+}</code></pre>
+                    </div>
+                    
+                    <h4>מבנה נתונים נשלח לוובהוק:</h4>
+                    <div class="code-example">
+                        <pre><code>{
+  "event": "message",
+  "timestamp": 1678912345,
+  "messageId": "ABC123XYZ",
+  "from": "972501234567",
+  "content": {
+    "type": "text",
+    "text": "שלום, מה שלומך?",
+    "quotedMessage": null
+  }
+}</code></pre>
+                    </div>
+                </section>
+                
+                <section id="status" class="doc-section">
+                    <h3>סטטוס חיבור</h3>
+                    <p>ניתן לבדוק את סטטוס החיבור לוואטסאפ באמצעות נקודת קצה זו.</p>
+                    
+                    <h4>קבלת סטטוס חיבור</h4>
+                    <div class="endpoint">
+                        <span class="method">GET</span>
+                        <span class="url">/api/v1/status</span>
+                    </div>
+                    
+                    <div class="code-example">
+                        <h5>דוגמת בקשה:</h5>
+                        <pre><code>fetch('https://api.whatsconnect.com/v1/status', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY'
+  }
+})</code></pre>
+
+                        <h5>דוגמת תשובה:</h5>
+                        <pre><code>{
+  "status": "connected",
+  "lastConnected": "2025-03-01T12:34:56Z",
+  "active": true
+}</code></pre>
+                    </div>
+                </section>
+                
+                <section id="advanced" class="doc-section">
+                    <h3>אפשרויות מתקדמות</h3>
+                    <p>API זה מבוסס על ספריית whatsapp-web.js ומאפשר גישה לרוב הפונקציונליות שלה.</p>
+                    
+                    <h4>שליחת הודעת מדיה (תמונה)</h4>
+                    <div class="endpoint">
+                        <span class="method">POST</span>
+                        <span class="url">/api/v1/messages/media</span>
+                    </div>
+                    
+                    <div class="params-table">
+                        <h5>פרמטרים:</h5>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>שם</th>
+                                    <th>סוג</th>
+                                    <th>חובה</th>
+                                    <th>תיאור</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>phone</td>
+                                    <td>String</td>
+                                    <td>כן</td>
+                                    <td>מספר טלפון כולל קידומת מדינה</td>
+                                </tr>
+                                <tr>
+                                    <td>media</td>
+                                    <td>String</td>
+                                    <td>כן</td>
+                                    <td>כתובת URL של התמונה או Base64 מקודד</td>
+                                </tr>
+                                <tr>
+                                    <td>caption</td>
+                                    <td>String</td>
+                                    <td>לא</td>
+                                    <td>כיתוב לתמונה (אופציונלי)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="code-example">
+                        <h5>דוגמת בקשה:</h5>
+                        <pre><code>fetch('https://api.whatsconnect.com/v1/messages/media', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    phone: '972501234567',
+    media: 'https://example.com/image.jpg',
+    caption: 'תמונה מעניינת'
+  })
+})</code></pre>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>WhatsConnect</h2>
+                    <p>API חזק ופשוט לוואטסאפ</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h3>קישורים</h3>
+                        <ul>
+                            <li><a href="/dashboard.html">לוח בקרה</a></li>
+                            <li><a href="/documentation.html">תיעוד API</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 WhatsConnect. כל הזכויות שמורות.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="js/main.js"></script>
+    <script src="js/documentation.js"></script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>הרשמה | WhatsConnect API</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <h1>WhatsConnect</h1>
+                <span class="tagline">API מקצועי לוואטסאפ</span>
+            </div>
+            <nav class="main-nav">
+                <a href="/">בית</a>
+                <a href="/login.html">התחברות</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="form-section">
+        <div class="container">
+            <div class="auth-form">
+                <h2>הרשמה לשירות</h2>
+                <p>הירשם וקבל גישה ל-API מקצועי של וואטסאפ</p>
+                
+                <form id="register-form">
+                    <div class="form-group">
+                        <label for="name">שם מלא</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">דוא״ל</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">סיסמה</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">טלפון</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>בחר חבילה:</label>
+                        <div class="plan-options">
+                            <div class="plan-option">
+                                <input type="radio" id="basic" name="plan" value="basic" checked>
+                                <label for="basic">
+                                    <span class="plan-name">בסיס</span>
+                                    <span class="plan-price">₪99 / חודש</span>
+                                    <span class="plan-features">עד 1000 הודעות בחודש</span>
+                                </label>
+                            </div>
+                            
+                            <div class="plan-option">
+                                <input type="radio" id="pro" name="plan" value="pro">
+                                <label for="pro">
+                                    <span class="plan-name">פרו</span>
+                                    <span class="plan-price">₪199 / חודש</span>
+                                    <span class="plan-features">עד 5000 הודעות בחודש</span>
+                                </label>
+                            </div>
+                            
+                            <div class="plan-option">
+                                <input type="radio" id="platinum" name="plan" value="platinum">
+                                <label for="platinum">
+                                    <span class="plan-name">פלטיניום</span>
+                                    <span class="plan-price">₪399 / חודש</span>
+                                    <span class="plan-features">הודעות ללא הגבלה</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group terms-group">
+                        <input type="checkbox" id="terms" name="terms" required>
+                        <label for="terms">אני מאשר/ת שקראתי את <a href="#" target="_blank">התקנון</a> ומסכים/ה לתנאיו</label>
+                    </div>
+                    
+                    <div id="form-result" class="form-result"></div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block">הרשמה</button>
+                </form>
+                
+                <div class="auth-links">
+                    <p>כבר יש לך חשבון? <a href="/login.html">התחבר/י כאן</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>WhatsConnect</h2>
+                    <p>API חזק ופשוט לוואטסאפ</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h3>קישורים</h3>
+                        <ul>
+                            <li><a href="/">בית</a></li>
+                            <li><a href="/login.html">התחברות</a></li>
+                            <li><a href="/register.html">הרשמה</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 WhatsConnect. כל הזכויות שמורות.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="js/main.js"></script>
+    <script>
+        document.getElementById('register-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value,
+                phone: document.getElementById('phone').value,
+                plan: document.querySelector('input[name="plan"]:checked').value,
+                acceptedTerms: document.getElementById('terms').checked
+            };
+            
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('form-result').innerHTML = 
+                        '<div class="alert alert-success">ההרשמה בוצעה בהצלחה! מעביר אותך להתחברות...</div>';
+                    
+                    // מעבר לדף ההתחברות לאחר 2 שניות
+                    setTimeout(() => {
+                        window.location.href = '/login.html';
+                    }, 2000);
+                } else {
+                    document.getElementById('form-result').innerHTML = 
+                        `<div class="alert alert-error">שגיאה: ${data.error}</div>`;
+                }
+            } catch (error) {
+                document.getElementById('form-result').innerHTML = 
+                    '<div class="alert alert-error">שגיאה בהרשמה, נסה שוב מאוחר יותר</div>';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ניהול מערכת | WhatsConnect API</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <h1>WhatsConnect</h1>
+                <span class="tagline">ממשק ניהול</span>
+            </div>
+            <nav class="main-nav">
+                <a href="/admin.html" class="active">משתמשים</a>
+                <a href="/admin-stats.html">סטטיסטיקות</a>
+                <a href="/admin-settings.html">הגדרות מערכת</a>
+                <button id="logout-btn" class="btn btn-outline">התנתקות</button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="admin-layout">
+        <div class="container">
+            <div class="admin-header">
+                <h2>ניהול משתמשים</h2>
+                <button id="create-user-btn" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> הוספת משתמש חדש
+                </button>
+            </div>
+            
+            <div class="admin-filters">
+                <div class="search-box">
+                    <input type="text" id="search-users" placeholder="חיפוש לפי שם או אימייל...">
+                    <button class="search-btn"><i class="fas fa-search"></i></button>
+                </div>
+                
+                <div class="filter-group">
+                    <label>סינון לפי חבילה:</label>
+                    <select id="filter-plan">
+                        <option value="">הכל</option>
+                        <option value="basic">בסיס</option>
+                        <option value="pro">פרו</option>
+                        <option value="platinum">פלטיניום</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>סינון לפי סטטוס:</label>
+                    <select id="filter-status">
+                        <option value="">הכל</option>
+                        <option value="active">פעיל</option>
+                        <option value="inactive">לא פעיל</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="users-table-container">
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>שם</th>
+                            <th>אימייל</th>
+                            <th>טלפון</th>
+                            <th>חבילה</th>
+                            <th>סטטוס</th>
+                            <th>תאריך הרשמה</th>
+                            <th>פעולות</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-list">
+                        <!-- הנתונים יוטענו דינאמית -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="pagination">
+                <button id="prev-page" class="btn btn-outline"><i class="fas fa-chevron-right"></i> הקודם</button>
+                <span id="page-info">עמוד <span id="current-page">1</span> מתוך <span id="total-pages">1</span></span>
+                <button id="next-page" class="btn btn-outline">הבא <i class="fas fa-chevron-left"></i></button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- מודאל להוספת/עריכת משתמש -->
+    <div id="user-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">הוספת משתמש חדש</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="user-form">
+                    <input type="hidden" id="user-id">
+                    
+                    <div class="form-group">
+                        <label for="user-name">שם מלא</label>
+                        <input type="text" id="user-name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="user-email">דוא״ל</label>
+                        <input type="email" id="user-email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="user-password">סיסמה <small>(השאר ריק אם לא לשנות)</small></label>
+                        <input type="password" id="user-password">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="user-phone">טלפון</label>
+                        <input type="tel" id="user-phone" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>חבילה:</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="plan-basic" name="user-plan" value="basic">
+                                <label for="plan-basic">בסיס</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="plan-pro" name="user-plan" value="pro">
+                                <label for="plan-pro">פרו</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="plan-platinum" name="user-plan" value="platinum">
+                                <label for="plan-platinum">פלטיניום</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>תפקיד:</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="role-user" name="user-role" value="user">
+                                <label for="role-user">משתמש רגיל</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="role-admin" name="user-role" value="admin">
+                                <label for="role-admin">מנהל</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="user-status">סטטוס:</label>
+                        <select id="user-status">
+                            <option value="active">פעיל</option>
+                            <option value="inactive">לא פעיל</option>
+                        </select>
+                    </div>
+                    
+                    <div id="form-result" class="form-result"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="cancel-btn" class="btn btn-outline">ביטול</button>
+                <button id="save-user-btn" class="btn btn-primary">שמירה</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>WhatsConnect</h2>
+                    <p>API חזק ופשוט לוואטסאפ</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 WhatsConnect. כל הזכויות שמורות.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="js/main.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

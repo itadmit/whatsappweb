@@ -1,0 +1,32 @@
+{
+  "name": "whatsapp-api-saas",
+  "version": "1.0.0",
+  "description": "WhatsApp API as a Service",
+  "main": "server/server.js",
+"scripts": {
+  "start": "node server/server.js",
+  "dev": "nodemon server/server.js",
+  "test": "echo \"Error: no test specified\" && exit 1"
+},
+  "keywords": [
+    "whatsapp",
+    "api",
+    "saas"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^8.12.1",
+    "qrcode": "^1.5.4",
+    "whatsapp-web.js": "^1.26.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  },
+  "type": "commonjs"
+}
