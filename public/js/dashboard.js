@@ -22,6 +22,10 @@ document.addEventListener('DOMContentLoaded', function() {
   const sendTestBtn = document.getElementById('send-test-btn');
   const logoutBtn = document.getElementById('logout-btn');
   
+  const typebotToggle = document.getElementById('typebot-toggle');
+  const typebotId = document.getElementById('typebot-id');
+  const saveTypebotBtn = document.getElementById('save-typebot-btn');
+
   // החיבור לקוח - המזהה יהיה מזהה החיבור הקיים במסד הנתונים
   let clientId = 'default';
   let qrCheckInterval;
@@ -400,6 +404,71 @@ document.addEventListener('DOMContentLoaded', function() {
           showKeyBtn.innerHTML = '<i class="fas fa-eye"></i>';
       }
   }
+
+  function loadTypebotSettings() {
+    const token = localStorage.getItem('token');
+    
+    fetch(`/api/clients/${clientId}/typebot`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        typebotToggle.checked = data.typebotEnabled || false;
+        typebotId.value = data.typebotId || '';
+      }
+    })
+    .catch(error => {
+      console.error('Error loading typebot settings:', error);
+    });
+  }
+  
+  // אתר את המקום שבו מוגדרים מאזיני האירועים והוסף:
+  // שמירת הגדרות צ'אטבוט
+  if (saveTypebotBtn) {
+    saveTypebotBtn.addEventListener('click', function() {
+      const token = localStorage.getItem('token');
+      
+      saveTypebotBtn.disabled = true;
+      saveTypebotBtn.textContent = 'שומר...';
+      
+      fetch(`/api/clients/${clientId}/typebot`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          typebotEnabled: typebotToggle.checked,
+          typebotId: typebotId.value
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert('הגדרות הצ\'אטבוט נשמרו בהצלחה!');
+        } else {
+          alert(`שגיאה: ${data.error || 'לא ניתן לשמור את ההגדרות'}`);
+        }
+        
+        saveTypebotBtn.disabled = false;
+        saveTypebotBtn.textContent = 'שמור הגדרות';
+      })
+      .catch(error => {
+        console.error('Save typebot settings error:', error);
+        alert('שגיאה בשמירת ההגדרות. נסה שוב מאוחר יותר.');
+        
+        saveTypebotBtn.disabled = false;
+        saveTypebotBtn.textContent = 'שמור הגדרות';
+      });
+    });
+  }
+  
+  // אתר את הפונקציה שמאתחלת את הדף והוסף בסופה:
+  loadTypebotSettings();
+  
   
   // העתקת מפתח API ללוח
   function copyApiKey() {

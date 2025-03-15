@@ -89,45 +89,69 @@ class WhatsAppService {
       }
     });
 
-    client.on('message', async (message) => {
-      console.log(`Message received for client ${clientId}: ${message.body}`);
-      
-      // שליחה לוובהוק אם הוגדר
-      if (webhooks[clientId]) {
-        try {
-          const messageData = {
-            event: 'message',
-            timestamp: Date.now(),
-            client_id: clientId,
-            message_id: message.id.id,
-            from: message.from.split('@')[0],
-            to: message.to ? message.to.split('@')[0] : 'me',
-            content: {
-              type: 'text',
-              text: message.body
-            }
-          };
-          
-          await axios.post(webhooks[clientId], messageData);
-          console.log(`Webhook sent for client ${clientId}`);
-          
-          // עדכון סטטיסטיקות הודעות
-          const MessageStats = require('../models/MessageStats');
-          const Connection = require('../models/Connection');
-          
-          const connection = await Connection.findById(clientId);
-          if (connection) {
-            await MessageStats.updateOne(
-              { userId: connection.userId, connectionId: connection._id },
-              { $inc: { messagesReceived: 1 } },
-              { upsert: true }
-            );
-          }
-        } catch (error) {
-          console.error(`Error sending webhook for client ${clientId}:`, error.message);
+    // חפש את הפונקציה המטפלת באירוע הודעה נכנסת וערוך אותה כך:
+
+client.on('message', async (message) => {
+  console.log(`Message received for client ${clientId}: ${message.body}`);
+  
+  // שליחה לוובהוק אם הוגדר
+  if (webhooks[clientId]) {
+    try {
+      const messageData = {
+        event: 'message',
+        timestamp: Date.now(),
+        client_id: clientId,
+        message_id: message.id.id,
+        from: message.from.split('@')[0],
+        to: message.to ? message.to.split('@')[0] : 'me',
+        content: {
+          type: 'text',
+          text: message.body
         }
+      };
+      
+      await axios.post(webhooks[clientId], messageData);
+      console.log(`Webhook sent for client ${clientId}`);
+      
+      // עדכון סטטיסטיקות הודעות
+      const MessageStats = require('../models/MessageStats');
+      const Connection = require('../models/Connection');
+      
+      const connection = await Connection.findById(clientId);
+      if (connection) {
+        // בדיקה אם צ'אטבוט מופעל
+        if (connection.typebotEnabled && connection.typebotId) {
+          try {
+            // העברה לצ'אטבוט
+            const typebotPayload = {
+              from: message.from.split('@')[0],
+              message: message.body,
+              clientId: clientId
+            };
+            
+            await axios.post('http://localhost:3000/api/typebot/relay', typebotPayload, {               headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer internal_auth_token`
+              }
+            });
+            
+            console.log(`Message relayed to typebot for client ${clientId}`);
+          } catch (error) {
+            console.error(`Error relaying to typebot for client ${clientId}:`, error.message);
+          }
+        }
+        
+        await MessageStats.updateOne(
+          { userId: connection.userId, connectionId: connection._id },
+          { $inc: { messagesReceived: 1 } },
+          { upsert: true }
+        );
       }
-    });
+    } catch (error) {
+      console.error(`Error sending webhook for client ${clientId}:`, error.message);
+    }
+  }
+});
 
     client.on('disconnected', () => {
       clients[clientId].status = 'disconnected';

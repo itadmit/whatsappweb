@@ -6,6 +6,7 @@ const { authMiddleware } = require('../middlewares/auth');
 const Connection = require('../models/Connection');
 const MessageStats = require('../models/MessageStats');
 const WhatsAppService = require('../services/whatsappService');
+const typebotController = require('../controllers/typebotController');
 
 // נתיבי WhatsApp - עם אימות משתמש
 router.use(authMiddleware);
@@ -15,6 +16,11 @@ router.get('/clients/:clientId/qr', whatsappController.getQR);
 router.post('/clients/:clientId/messages', whatsappController.sendMessage);
 router.get('/clients/:clientId/status', whatsappController.getStatus);
 router.delete('/clients/:clientId', whatsappController.disconnectClient);
+
+
+router.post('/typebot/relay', authMiddleware, typebotController.relayToTypebot);
+router.get('/clients/:clientId/typebot', authMiddleware, typebotController.getTypebotSettings);
+router.post('/clients/:clientId/typebot', authMiddleware, typebotController.saveTypebotSettings);
 
 // נתיבי Webhook
 router.post('/clients/:clientId/webhook', webhookController.setWebhook);

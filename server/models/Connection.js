@@ -19,6 +19,15 @@ const ConnectionSchema = new mongoose.Schema({
     type: Date,
     default: null
   },
+  // השדות החדשים להגדרות typebot
+  typebotEnabled: {
+    type: Boolean,
+    default: false
+  },
+  typebotId: {
+    type: String,
+    default: null
+  },
   createdAt: {
     type: Date,
     default: Date.now

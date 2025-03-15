@@ -1,0 +1,41 @@
+[33mcommit 2feac0106cd8330f1a9d906042b8352ffaa43653[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: EC2 Default User <ec2-user@ip-172-31-90-23.ec2.internal>
+Date:   Sat Mar 15 10:26:01 2025 +0000
+
+    Add chatbot functionality
+
+[33mcommit 49914cc7d50eda4d4c771205597219e17666e80b[m
+Author: Yogev avitan <tadmitinteractive@h-iMac-sl-Yogev.local>
+Date:   Thu Mar 13 18:22:15 2025 +0200
+
+    עליה לפרודקשין
+
+[33mcommit f11417fa96342cdfa3ab6005f2adfd1d262a2965[m
+Author: Yogev avitan <tadmitinteractive@h-iMac-sl-Yogev.local>
+Date:   Thu Mar 13 15:13:32 2025 +0200
+
+    דוקומנטציה חדשה
+
+[33mcommit cee23bf26acc5eaa5139aa80939b86b9303275fa[m
+Author: Yogev avitan <tadmitinteractive@h-iMac-sl-Yogev.local>
+Date:   Thu Mar 13 15:07:11 2025 +0200
+
+    מסד נתונים מונגו + מעבר לליב
+
+[33mcommit eec9adbc9ac640f8b33f9ac0ff9bf21a0467b73c[m
+Author: yogev <itadnit@gmail.com>
+Date:   Thu Mar 13 14:06:19 2025 +0200
+
+    הוספת קבצי פרויקט ללא node_modules
+
+[33mcommit 06ede8e81c991693c79f6e05b63c800600fa1575[m
+Author: yogev <itadnit@gmail.com>
+Date:   Thu Mar 13 14:03:07 2025 +0200
+
+    הוספת קבצי פרויקט
+
+[33mcommit fb4a558b646ed9e44d8359b24363e3d21aa89957[m
+Author: yogev <itadnit@gmail.com>
+Date:   Thu Mar 13 14:00:18 2025 +0200
+
+    first commit
