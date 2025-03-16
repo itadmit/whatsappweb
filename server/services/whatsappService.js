@@ -89,69 +89,102 @@ class WhatsAppService {
       }
     });
 
-    // חפש את הפונקציה המטפלת באירוע הודעה נכנסת וערוך אותה כך:
-
-client.on('message', async (message) => {
-  console.log(`Message received for client ${clientId}: ${message.body}`);
-  
-  // שליחה לוובהוק אם הוגדר
-  if (webhooks[clientId]) {
-    try {
-      const messageData = {
-        event: 'message',
-        timestamp: Date.now(),
-        client_id: clientId,
-        message_id: message.id.id,
-        from: message.from.split('@')[0],
-        to: message.to ? message.to.split('@')[0] : 'me',
-        content: {
-          type: 'text',
-          text: message.body
-        }
-      };
+    // טיפול בהודעות נכנסות
+    client.on('message', async (message) => {
+      console.log(`Message received for client ${clientId}: ${message.body}`);
       
-      await axios.post(webhooks[clientId], messageData);
-      console.log(`Webhook sent for client ${clientId}`);
-      
-      // עדכון סטטיסטיקות הודעות
-      const MessageStats = require('../models/MessageStats');
-      const Connection = require('../models/Connection');
-      
-      const connection = await Connection.findById(clientId);
-      if (connection) {
-        // בדיקה אם צ'אטבוט מופעל
-        if (connection.typebotEnabled && connection.typebotId) {
+      try {
+        // שליחה לוובהוק אם מוגדר
+        if (webhooks[clientId]) {
           try {
-            // העברה לצ'אטבוט
-            const typebotPayload = {
+            const messageData = {
+              event: 'message',
+              timestamp: Date.now(),
+              client_id: clientId,
+              message_id: message.id.id,
               from: message.from.split('@')[0],
-              message: message.body,
-              clientId: clientId
+              to: message.to ? message.to.split('@')[0] : 'me',
+              content: {
+                type: 'text',
+                text: message.body
+              }
             };
             
-            await axios.post('http://localhost:3000/api/typebot/relay', typebotPayload, {               headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer internal_auth_token`
-              }
-            });
-            
-            console.log(`Message relayed to typebot for client ${clientId}`);
-          } catch (error) {
-            console.error(`Error relaying to typebot for client ${clientId}:`, error.message);
+            await axios.post(webhooks[clientId], messageData);
+            console.log(`Webhook sent for client ${clientId}`);
+          } catch (webhookError) {
+            console.error(`Error sending webhook for client ${clientId}:`, webhookError.message);
           }
         }
         
-        await MessageStats.updateOne(
-          { userId: connection.userId, connectionId: connection._id },
-          { $inc: { messagesReceived: 1 } },
-          { upsert: true }
-        );
+        // עדכון סטטיסטיקות הודעות ושליחה לצ'אטבוט
+        try {
+          const MessageStats = require('../models/MessageStats');
+          const Connection = require('../models/Connection');
+          
+          const connection = await Connection.findById(clientId);
+          if (connection) {
+            // בדיקה אם צ'אטבוט מופעל
+            if (connection.typebotEnabled && connection.typebotId) {
+              try {
+                console.log(`Typebot is enabled for client ${clientId}, sending message to typebot relay`);
+                
+                // יצירת המטען לשליחה לצ'אטבוט
+                const typebotPayload = {
+                  from: message.from,
+                  message: message.body,
+                  clientId: clientId
+                };
+                
+                // הגדרת טוקן API
+                const TYPEBOT_API_TOKEN = 'internal_auth_token';
+                
+                // קריאה לשירות הצ'אטבוט - שימוש בURL מלא
+                const typebotRelayUrl = `http://${process.env.HOST || 'localhost'}:${process.env.PORT || '3000'}/api/typebot/relay`;
+                console.log(`Sending message to typebot relay URL: ${typebotRelayUrl}`);
+                
+                const typebotResponse = await axios.post(
+                  typebotRelayUrl,
+                  typebotPayload,
+                  {
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': `Bearer ${TYPEBOT_API_TOKEN}`
+                    }
+                  }
+                );
+                
+                console.log(`Message relayed to typebot, response:`, typebotResponse.data);
+              } catch (typebotError) {
+                console.error(`Error relaying to typebot for client ${clientId}:`, typebotError.message);
+                // שגיאה מפורטת יותר לצורך דיבאג
+                if (typebotError.response) {
+                  console.error(`Typebot error response:`, {
+                    status: typebotError.response.status,
+                    data: typebotError.response.data
+                  });
+                }
+              }
+            } else {
+              console.log(`Typebot is not enabled for client ${clientId}`);
+            }
+            
+            // עדכון סטטיסטיקות
+            await MessageStats.updateOne(
+              { userId: connection.userId, connectionId: connection._id },
+              { $inc: { messagesReceived: 1 } },
+              { upsert: true }
+            );
+          } else {
+            console.log(`No connection found for client ${clientId}`);
+          }
+        } catch (statsError) {
+          console.error(`Error updating message statistics for client ${clientId}:`, statsError.message);
+        }
+      } catch (error) {
+        console.error(`Error processing incoming message for client ${clientId}:`, error.message);
       }
-    } catch (error) {
-      console.error(`Error sending webhook for client ${clientId}:`, error.message);
-    }
-  }
-});
+    });
 
     client.on('disconnected', () => {
       clients[clientId].status = 'disconnected';
@@ -209,8 +242,12 @@ client.on('message', async (message) => {
         ? phone 
         : `${phone.replace(/[^\d]/g, '')}@c.us`;
       
+      console.log(`Sending message to ${formattedPhone}`);
+      
       // שליחת ההודעה
       const result = await clients[clientId].client.sendMessage(formattedPhone, message);
+      
+      console.log(`Message sent successfully to ${formattedPhone}`);
       
       return {
         success: true,
@@ -247,27 +284,27 @@ client.on('message', async (message) => {
     };
   }
 
-// ניתוק חיבור
-static async disconnectClient(clientId) {
-  if (!clients[clientId]) {
-    throw new Error('Client not found');
-  }
+  // ניתוק חיבור
+  static async disconnectClient(clientId) {
+    if (!clients[clientId]) {
+      throw new Error('Client not found');
+    }
 
-  try {
-    await clients[clientId].client.destroy();
-    delete clients[clientId];
-    delete qrCodes[clientId];
-    delete webhooks[clientId];
+    try {
+      await clients[clientId].client.destroy();
+      delete clients[clientId];
+      delete qrCodes[clientId];
+      delete webhooks[clientId];
 
-    return {
-      success: true,
-      message: 'Client disconnected successfully'
-    };
-  } catch (error) {
-    console.error(`Error disconnecting client ${clientId}:`, error);
-    throw error;
+      return {
+        success: true,
+        message: 'Client disconnected successfully'
+      };
+    } catch (error) {
+      console.error(`Error disconnecting client ${clientId}:`, error);
+      throw error;
+    }
   }
-}
 }
 
 module.exports = WhatsAppService;

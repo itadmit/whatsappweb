@@ -518,34 +518,51 @@
 
 
                 <!-- הוסף בין הכרטיסיות האחרות בדשבורד -->
-<div class="dash-card">
-    <h3><i class="fas fa-robot"></i> הגדרות צ'אטבוט</h3>
-    
-    <div class="form-group">
-      <label for="typebot-toggle">הפעל צ'אטבוט אוטומטי:</label>
-      <div class="toggle-switch">
-        <input type="checkbox" id="typebot-toggle" name="typebotEnabled">
-        <label for="typebot-toggle"></label>
-      </div>
-    </div>
-    
-    <div class="form-group">
-      <label for="typebot-id">מזהה הצ'אטבוט ב-Typebot:</label>
-      <input type="text" id="typebot-id" placeholder="הזן את מזהה הצ'אטבוט">
-      <small>מצא את מזהה הצ'אטבוט ב-URL או בהגדרות הצ'אטבוט בממשק typebot</small>
-    </div>
-    
-    <button id="save-typebot-btn" class="btn btn-primary">שמור הגדרות</button>
-    
-    <div class="quick-help" style="margin-top: 20px;">
-      <h4>איך לחבר את הצ'אטבוט?</h4>
-      <ol>
-        <li>צור צ'אטבוט ב-<a href="http://54.159.186.218:3000" target="_blank">ממשק typebot</a></li>
-        <li>העתק את מזהה הצ'אטבוט (נמצא ב-URL או בהגדרות)</li>
-        <li>הדבק את המזהה בשדה למעלה והפעל את הצ'אטבוט</li>
-      </ol>
-    </div>
-  </div>
+                <div class="dash-card">
+                    <h3><i class="fas fa-robot"></i> הגדרות צ'אטבוט</h3>
+                    
+                    <div class="typebot-settings">
+                      <div class="typebot-header">
+                        <div class="typebot-icon">
+                          <i class="fas fa-comment-dots"></i>
+                        </div>
+                        <div>
+                          <p>השתמש בצ'אטבוט כדי להגיב באופן אוטומטי להודעות.</p>
+                          <div class="typebot-status">
+                            <div id="typebot-status-indicator" class="typebot-status-indicator disabled"></div>
+                            <span id="typebot-status-text">צ'אטבוט לא פעיל</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div class="typebot-field-row">
+                        <div class="form-group">
+                          <label for="typebot-toggle">הפעל צ'אטבוט אוטומטי:</label>
+                          <div class="toggle-switch">
+                            <input type="checkbox" id="typebot-toggle" name="typebotEnabled">
+                            <label for="typebot-toggle"></label>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div class="form-group">
+                        <label for="typebot-id">מזהה הצ'אטבוט ב-Typebot:</label>
+                        <input type="text" id="typebot-id" placeholder="הזן את מזהה הצ'אטבוט">
+                        <small>מצא את מזהה הצ'אטבוט ב-URL או בהגדרות הצ'אטבוט בממשק typebot</small>
+                      </div>
+                      
+                      <button id="save-typebot-btn" class="btn btn-primary">שמור הגדרות</button>
+                      
+                      <div class="typebot-help">
+                        <h4>איך לחבר את הצ'אטבוט?</h4>
+                        <ol>
+                          <li>צור צ'אטבוט ב-<a href="http://localhost:8081" target="_blank">ממשק typebot</a></li>
+                          <li>העתק את מזהה הצ'אטבוט (נמצא ב-URL או בהגדרות)</li>
+                          <li>הדבק את המזהה בשדה למעלה והפעל את הצ'אטבוט</li>
+                          <li>בדוק את החיבור על ידי שליחת הודעת בדיקה לטלפון שלך</li>
+                        </ol>
+                      </div>
+                    </div>
 
   
                 <div class="dash-card">
@@ -582,7 +599,34 @@
             </div>
         </div>
     </footer>
-
+    <script>
+        // Update Typebot status indicator function
+        function updateTypebotStatus() {
+          const typebotToggle = document.getElementById('typebot-toggle');
+          const statusIndicator = document.getElementById('typebot-status-indicator');
+          const statusText = document.getElementById('typebot-status-text');
+          
+          if (typebotToggle && statusIndicator && statusText) {
+            if (typebotToggle.checked) {
+              statusIndicator.classList.remove('disabled');
+              statusIndicator.classList.add('enabled');
+              statusText.textContent = 'צ\'אטבוט פעיל';
+            } else {
+              statusIndicator.classList.remove('enabled');
+              statusIndicator.classList.add('disabled');
+              statusText.textContent = 'צ\'אטבוט לא פעיל';
+            }
+          }
+        }
+        
+        // Add event listener to update status when toggle changes
+        document.addEventListener('DOMContentLoaded', function() {
+          const typebotToggle = document.getElementById('typebot-toggle');
+          if (typebotToggle) {
+            typebotToggle.addEventListener('change', updateTypebotStatus);
+          }
+        });
+      </script>
     <script src="js/dashboard.js"></script>
 </body>
 </html>
